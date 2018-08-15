@@ -1,0 +1,13 @@
+{
+    "name": "markus.kalkbrenner/search_api_solr_drupaleurope",
+    "description": "https://www.drupaleurope.org/session/advanced-solr-build-data-driven-features",
+    "type": "project",
+    "license": "GPLv3",
+    "authors": [
+        {
+            "name": "Markus Kalkbrenner",
+            "email": "markus.kalkbrenner@biologis.com"
+        }
+    ],
+    "require": {}
+}
