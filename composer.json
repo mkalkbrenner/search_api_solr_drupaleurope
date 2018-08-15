@@ -9,5 +9,15 @@
             "email": "markus.kalkbrenner@biologis.com"
         }
     ],
-    "require": {}
+    "require": {
+        "drupal-composer/drupal-scaffold": "dev-master",
+        "drupal/core": "^8.5",
+        "drupal/search_api_solr": "^2.1"
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://packages.drupal.org/8"
+        }
+    ]
 }
