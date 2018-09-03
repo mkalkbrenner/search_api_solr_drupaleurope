@@ -53,6 +53,11 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.field_summary
+  nid:
+    label: ID
+    datasource_id: 'entity:node'
+    property_path: nid
+    type: integer
   uid:
     label: 'Author » User » User ID'
     datasource_id: 'entity:node'

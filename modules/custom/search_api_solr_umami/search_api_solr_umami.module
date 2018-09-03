@@ -1,0 +1,82 @@
+<?php
+
+use Drupal\search_api\Entity\Index;
+
+/**
+ * Implements hook_search_api_solr_field_mapping_alter().
+ */
+function search_api_solr_umami_search_api_solr_field_mapping_alter(\Drupal\search_api\IndexInterface $index, array &$fields) {
+  $single_values = [
+    'average_voting',
+  ];
+
+  foreach ($single_values as $single_value) {
+    if (isset($fields[$single_value])) {
+      $parts = explode('_', $fields[$single_value]);
+      // For example use a sds_* single value field instead of the sdm_* multi-valued one.
+      $parts[0] = preg_replace('/(.+)m$/', '$1s', $parts[0]);
+      $fields[$single_value] = implode('_', $parts);
+    }
+  }
+}
+
+/**
+ * Implements hook_search_api_solr_finalize_index().
+ *
+ * @throws \Drupal\search_api\SearchApiException
+ */
+function search_api_solr_umami_search_api_solr_finalize_index(\Drupal\search_api\IndexInterface $index) {
+  if ('votings' == $index->id()) {
+    $cu_options = [
+      'commit.waitSearcher' => TRUE,
+      'commit.softCommit' => TRUE,
+    ];
+
+    /** @var \Drupal\search_api_solr\Utility\StreamingExpressionQueryHelper $queryHelper */
+    $queryHelper = \Drupal::service('search_api_solr.streaming_expression_query_helper');
+
+    $votings_query = $queryHelper->createQuery($index);
+    $votings_exp = $queryHelper->getStreamingExpressionBuilder($votings_query);
+
+    $recipes_index = Index::load('recipes');
+    $recipes_query = $queryHelper->createQuery($recipes_index);
+    $recipes_exp = $queryHelper->getStreamingExpressionBuilder($recipes_query);
+
+    $streaming_expression =
+      $recipes_exp->_commit_update(
+        $recipes_exp->innerJoin(
+          $recipes_exp->_search_all(
+            'q=*:*',
+            'fq="' . $recipes_exp->_index_filter_query() . '"',
+            'fl="' . $recipes_exp->_all_fields_list(',', TRUE, ['score', 'random', 'average_voting']) . '"',
+            'sort="' . $recipes_exp->_field('nid') . ' asc"'
+          ),
+          $votings_exp->select(
+            $votings_exp->rollup(
+              $votings_exp->_search_all(
+                'q=*:*',
+                'fq="' . $votings_exp->_index_filter_query() . '"',
+                'fl="' . $votings_exp->_field_list([
+                  'entity_id',
+                  'value'
+                ]) . '"',
+                'sort="' . $votings_exp->_field('entity_id') . ' asc"'
+              ),
+              'over="' . $votings_exp->_field('entity_id') . '"',
+              'avg(' . $votings_exp->_field('value') . ')'
+            ),
+            $votings_exp->_field('entity_id') . ' as ' . $recipes_exp->_field('nid'),
+            'avg(' . $votings_exp->_field('value') . ') as ' . $recipes_exp->_field('average_voting')
+          ),
+          'on=' . $recipes_exp->_field('nid')
+        ),
+        $cu_options
+      );
+
+    $queryHelper->setStreamingExpression($recipes_query, $streaming_expression);
+
+    $recipes_index->getServerInstance()
+      ->getBackend()
+      ->executeStreamingExpression($recipes_query);
+  }
+}
