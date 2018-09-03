@@ -38,7 +38,7 @@ xmlrpc.php
 /scripts
 /themes
 
-/vendor/
+/vendor
 .idea
 
 .csslintrc
