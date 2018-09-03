@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.average_voting
+  module:
+    - facets
+  theme:
+    - umami
+id: averagevoting
+theme: umami
+region: page_title
+weight: -6
+provider: null
+plugin: 'facet_block:average_voting'
+settings:
+  id: 'facet_block:average_voting'
+  label: 'Average Voting'
+  provider: facets
+  label_display: visible
+  block_id: averagevoting
+visibility: {  }
