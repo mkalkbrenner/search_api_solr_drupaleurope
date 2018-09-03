@@ -22,6 +22,14 @@
         "antennaio/jquery-bar-rating": "^1.2",
         "drupal/votingapi": "3.x-dev"
     },
+    "scripts": {
+        "post-install-cmd": [
+            "test -d core/profiles/demo_umami && mv core/profiles/demo_umami profiles_removed/"
+        ],
+        "post-update-cmd": [
+            "test -d core/profiles/demo_umami && mv core/profiles/demo_umami profiles_removed/"
+        ]
+    },
     "repositories": [
         {
             "type": "composer",

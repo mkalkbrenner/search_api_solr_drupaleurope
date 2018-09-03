@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "29cee893b307068f715ce8f27b9349b9",
+    "content-hash": "1f5a17ee42a96697c92e3e9372f29a5b",
     "packages": [
         {
             "name": "antennaio/jquery-bar-rating",
