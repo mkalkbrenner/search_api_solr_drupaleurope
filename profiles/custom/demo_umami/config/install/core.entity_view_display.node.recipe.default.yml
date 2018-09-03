@@ -13,6 +13,7 @@ dependencies:
     - field.field.node.recipe.field_recipe_instruction
     - field.field.node.recipe.field_summary
     - field.field.node.recipe.field_tags
+    - field.field.node.recipe.field_voting
     - node.type.recipe
     - responsive_image.styles.3_2_image
   module:
@@ -20,6 +21,7 @@ dependencies:
     - responsive_image
     - text
     - user
+    - votingapi_widgets
 id: node.recipe.default
 targetEntityType: node
 bundle: recipe
@@ -106,6 +108,18 @@ content:
     third_party_settings: {  }
     type: entity_reference_label
     region: content
+  field_voting:
+    weight: 11
+    label: above
+    settings:
+      readonly: false
+      style: default
+      show_results: false
+      values: {  }
+      show_own_vote: false
+    third_party_settings: {  }
+    type: voting_api_formatter
+    region: content
   links:
     weight: 10
     region: content
@@ -114,3 +128,4 @@ content:
 hidden:
   content_moderation_control: true
   field_author: true
+  langcode: true

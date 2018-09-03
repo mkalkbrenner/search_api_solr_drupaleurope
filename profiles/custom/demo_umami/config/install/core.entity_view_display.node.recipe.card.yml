@@ -14,26 +14,28 @@ dependencies:
     - field.field.node.recipe.field_recipe_instruction
     - field.field.node.recipe.field_summary
     - field.field.node.recipe.field_tags
+    - field.field.node.recipe.field_voting
     - node.type.recipe
     - responsive_image.styles.3_2_image
   module:
     - options
     - responsive_image
     - user
+    - votingapi_widgets
 id: node.recipe.card
 targetEntityType: node
 bundle: recipe
 mode: card
 content:
   field_difficulty:
-    weight: 0
+    weight: 1
     label: inline
     settings: {  }
     third_party_settings: {  }
     type: list_default
     region: content
   field_image:
-    weight: 1
+    weight: 2
     label: hidden
     settings:
       responsive_image_style: 3_2_image
@@ -41,6 +43,18 @@ content:
     third_party_settings: {  }
     type: responsive_image
     region: content
+  field_voting:
+    type: voting_api_formatter
+    weight: 0
+    region: content
+    label: inline
+    settings:
+      style: default
+      readonly: '1'
+      show_results: '1'
+      show_own_vote: 0
+      values: {  }
+    third_party_settings: {  }
 hidden:
   content_moderation_control: true
   field_author: true
@@ -52,4 +66,5 @@ hidden:
   field_recipe_instruction: true
   field_summary: true
   field_tags: true
+  langcode: true
   links: true

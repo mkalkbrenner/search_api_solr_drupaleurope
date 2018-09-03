@@ -13,6 +13,7 @@ dependencies:
     - field.field.node.recipe.field_recipe_instruction
     - field.field.node.recipe.field_summary
     - field.field.node.recipe.field_tags
+    - field.field.node.recipe.field_voting
     - image.style.thumbnail
     - node.type.recipe
   module:
@@ -20,6 +21,7 @@ dependencies:
     - image
     - path
     - text
+    - votingapi_widgets
 id: node.recipe.default
 targetEntityType: node
 bundle: recipe
@@ -117,6 +119,20 @@ content:
     third_party_settings: {  }
     type: entity_reference_autocomplete_tags
     region: content
+  field_voting:
+    weight: 26
+    settings:
+      show_initial_vote: 0
+    third_party_settings: {  }
+    type: voting_api_widget
+    region: content
+  langcode:
+    type: language_select
+    weight: 2
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
   moderation_state:
     type: moderation_state_default
     weight: 18

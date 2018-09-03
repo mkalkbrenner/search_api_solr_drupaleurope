@@ -53,6 +53,9 @@
             ],
             "modules/custom/{$name}": [
                 "type:drupal-custom-module"
+            ],
+            "profiles/custom/{$name}": [
+                "type:drupal-custom-profile"
             ]
         },
         "patches": {
