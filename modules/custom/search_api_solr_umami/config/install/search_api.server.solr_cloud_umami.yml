@@ -1,0 +1,32 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - search_api_solr.solr_field_type.text_phonetic_und_7_0_0
+    - search_api_solr.solr_field_type.text_und_7_0_0
+  module:
+    - search_api_solr
+id: solr_cloud_umami
+name: 'Solr Cloud Umami'
+description: ''
+backend: search_api_solr
+backend_config:
+  connector: solr_cloud
+  connector_config:
+    scheme: http
+    host: localhost
+    port: '8983'
+    path: /solr
+    core: umami
+    timeout: '5'
+    index_timeout: '5'
+    optimize_timeout: '10'
+    finalize_timeout: '30'
+    commit_within: '1000'
+    solr_version: ''
+    http_method: AUTO
+  retrieve_data: true
+  highlight_data: false
+  skip_schema_check: false
+  domain: generic
+  site_hash: false
