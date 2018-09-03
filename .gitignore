@@ -33,7 +33,7 @@ update.php
 xmlrpc.php
 /includes
 /misc
-/modules
+/modules/contrib
 /profiles
 /scripts
 /themes

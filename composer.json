@@ -11,10 +11,12 @@
     ],
     "minimum-stability": "alpha",
     "require": {
+        "php": ">=7.0.0",
+        "composer/installers": "^1.5",
         "cweagans/composer-patches": "^1.6",
         "drupal-composer/drupal-scaffold": "dev-master",
         "drupal/core": "~8.6.0",
-        "drupal/search_api_solr": "^2.1",
+        "drupal/search_api_solr": "2.x-dev",
         "drupal/devel": "^1.2",
         "drupal/votingapi_widgets": "1.x-dev",
         "antennaio/jquery-bar-rating": "^1.2",
@@ -39,6 +41,20 @@
         }
     ],
     "extra": {
+        "installer-paths": {
+            "modules/contrib/{$name}": [
+                "type:drupal-module"
+            ],
+            "profiles/contrib/{$name}": [
+                "type:drupal-profile"
+            ],
+            "themes/contrib/{$name}": [
+                "type:drupal-theme"
+            ],
+            "modules/custom/{$name}": [
+                "type:drupal-custom-module"
+            ]
+        },
         "patches": {
             "drupal/votingapi_widgets": {
                 "2996444 Exceptions on every page after Drupal 8.6 update": "https://www.drupal.org/files/issues/2018-08-31/2996444.patch"
