@@ -1,0 +1,8 @@
+type: module
+name: 'Umami Solr Search'
+description: 'Search powerd by Solr.'
+core: 8.x
+package: Search
+dependencies:
+  - search_api_solr:search_api_solr
+  - votingapi_widgets:votingapi_widgets
