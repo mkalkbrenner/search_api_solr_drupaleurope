@@ -51,3 +51,5 @@ autoload.php
 core/
 libraries/
 sites/
+
+profiles_removed/demo_umami
