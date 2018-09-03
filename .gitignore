@@ -40,3 +40,14 @@ xmlrpc.php
 
 /vendor/
 .idea
+
+.csslintrc
+.editorconfig
+.eslintignore
+.eslintrc.json
+.gitattributes
+.ht.router.php
+autoload.php
+core/
+libraries/
+sites/
