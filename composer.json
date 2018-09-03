@@ -9,15 +9,40 @@
             "email": "markus.kalkbrenner@biologis.com"
         }
     ],
+    "minimum-stability": "alpha",
     "require": {
+        "cweagans/composer-patches": "^1.6",
         "drupal-composer/drupal-scaffold": "dev-master",
-        "drupal/core": "^8.5",
-        "drupal/search_api_solr": "^2.1"
+        "drupal/core": "~8.6.0",
+        "drupal/search_api_solr": "^2.1",
+        "drupal/devel": "^1.2",
+        "drupal/votingapi_widgets": "1.x-dev",
+        "antennaio/jquery-bar-rating": "^1.2",
+        "drupal/votingapi": "3.x-dev"
     },
     "repositories": [
         {
             "type": "composer",
             "url": "https://packages.drupal.org/8"
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "antennaio/jquery-bar-rating",
+                "version": "1.2.2",
+                "type": "drupal-library",
+                "dist": {
+                    "type": "zip",
+                    "url": "https://github.com/antennaio/jquery-bar-rating/archive/v1.2.2.zip"
+                }
+            }
         }
-    ]
+    ],
+    "extra": {
+        "patches": {
+            "drupal/votingapi_widgets": {
+                "2996444 Exceptions on every page after Drupal 8.6 update": "https://www.drupal.org/files/issues/2018-08-31/2996444.patch"
+            }
+        }
+    }
 }
