@@ -26,7 +26,7 @@ function search_api_solr_umami_search_api_solr_field_mapping_alter(\Drupal\searc
  * @throws \Drupal\search_api\SearchApiException
  */
 function search_api_solr_umami_search_api_solr_finalize_index(\Drupal\search_api\IndexInterface $index) {
-  if ('votings' == $index->id()) {
+  if ('votings' == $index->id() || 'recipes' == $index->id()) {
     $cu_options = [
       'commit.waitSearcher' => TRUE,
       'commit.softCommit' => TRUE,
@@ -35,6 +35,7 @@ function search_api_solr_umami_search_api_solr_finalize_index(\Drupal\search_api
     /** @var \Drupal\search_api_solr\Utility\StreamingExpressionQueryHelper $queryHelper */
     $queryHelper = \Drupal::service('search_api_solr.streaming_expression_query_helper');
 
+    $votings_index = Index::load('votings');
     $votings_query = $queryHelper->createQuery($index);
     $votings_exp = $queryHelper->getStreamingExpressionBuilder($votings_query);
 
