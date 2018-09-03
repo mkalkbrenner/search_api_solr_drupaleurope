@@ -17,6 +17,7 @@
         "drupal-composer/drupal-scaffold": "dev-master",
         "drupal/core": "~8.6.0",
         "drupal/search_api_solr": "2.x-dev",
+        "drupal/facets": "^1.1",
         "drupal/devel": "^1.2",
         "drupal/votingapi_widgets": "1.x-dev",
         "antennaio/jquery-bar-rating": "^1.2",

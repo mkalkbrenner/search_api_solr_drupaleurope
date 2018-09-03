@@ -6,3 +6,4 @@ package: Search
 dependencies:
   - search_api_solr:search_api_solr
   - votingapi_widgets:votingapi_widgets
+  - facets:facets
