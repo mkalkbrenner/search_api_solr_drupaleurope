@@ -7,11 +7,10 @@ dependencies:
     - search_api
     - node
   config:
+    - field.storage.node.field_author
     - field.storage.node.field_ingredients
     - field.storage.node.field_recipe_instruction
     - field.storage.node.field_summary
-    - field.storage.node.field_voting
-    - field.storage.node.field_author
     - search_api.server.solr_cloud_umami
 third_party_settings:
   search_api_solr:
@@ -23,6 +22,13 @@ name: Recipes
 description: ''
 read_only: false
 field_settings:
+  average_voting:
+    label: 'Average Voting'
+    datasource_id: 'entity:node'
+    property_path: dummy_field
+    type: decimal
+    configuration:
+      dummy_value: '3'
   field_ingredients:
     label: Ingredients
     datasource_id: 'entity:node'
@@ -47,14 +53,6 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.field_summary
-  field_voting:
-    label: Voting
-    datasource_id: 'entity:node'
-    property_path: field_voting
-    type: integer
-    dependencies:
-      config:
-        - field.storage.node.field_voting
   uid:
     label: 'Author » User » User ID'
     datasource_id: 'entity:node'
@@ -98,12 +96,10 @@ processor_settings:
     alt: true
     tags:
       b: 2
-      em: 1
       h1: 5
       h2: 3
       h3: 2
       strong: 2
-      u: 1
     weights:
       preprocess_index: -15
       preprocess_query: -15
@@ -111,6 +107,7 @@ processor_settings:
   solr_date_range:
     weights:
       preprocess_index: 0
+  solr_dummy_fields: {  }
 tracker_settings:
   default:
     indexing_order: fifo
