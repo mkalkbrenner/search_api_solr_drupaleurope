@@ -36,7 +36,7 @@ function search_api_solr_umami_search_api_solr_finalize_index(\Drupal\search_api
     $queryHelper = \Drupal::service('search_api_solr.streaming_expression_query_helper');
 
     $votings_index = Index::load('votings');
-    $votings_query = $queryHelper->createQuery($index);
+    $votings_query = $queryHelper->createQuery($votings_index);
     $votings_exp = $queryHelper->getStreamingExpressionBuilder($votings_query);
 
     $recipes_index = Index::load('recipes');
@@ -79,5 +79,41 @@ function search_api_solr_umami_search_api_solr_finalize_index(\Drupal\search_api
     $recipes_index->getServerInstance()
       ->getBackend()
       ->executeStreamingExpression($recipes_query);
+  }
+}
+
+function search_api_solr_umami_search_api_solr_query_alter(Solarium\QueryType\Select\Query\Query $solarium_query, Drupal\search_api\Query\Query $query) {
+  if ($query->hasTag('views_recipe_solr_search')) {
+
+    /** @var \Drupal\search_api_solr\Utility\StreamingExpressionQueryHelper $queryHelper */
+    $queryHelper = \Drupal::service('search_api_solr.streaming_expression_query_helper');
+    $exp = $queryHelper->getStreamingExpressionBuilder($query);
+
+    $average_voting_field = $exp->_field('average_voting');
+
+    $facet_set = $solarium_query->getFacetSet();
+
+    $facet_set->removeFacet($average_voting_field);
+
+    $facet_set->createFacetRange([
+      'key' => $average_voting_field,
+      'field' => $average_voting_field,
+      'start' => 0,
+      'end' => 5,
+      'gap' => 1,
+    ]);
+  }
+}
+
+function search_api_solr_umami_search_api_query_alter(\Drupal\search_api\Query\QueryInterface &$query) {
+  foreach ($query->getConditionGroup()->getConditions() as $nested_condition_group) {
+    if ($nested_condition_group instanceof \Drupal\search_api\Query\ConditionGroupInterface && $nested_condition_group->hasTag('facet:average_voting'))  {
+      $condition = $nested_condition_group->getConditions()[0];
+      $nested_condition_group->addCondition(
+        $condition->getField(),
+        [$condition->getValue(), $condition->getValue() + 1],
+        'BETWEEN'
+        );
+    }
   }
 }
