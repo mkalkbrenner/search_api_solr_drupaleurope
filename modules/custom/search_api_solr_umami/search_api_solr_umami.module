@@ -35,8 +35,8 @@ function search_api_solr_umami_search_api_solr_finalize_index(\Drupal\search_api
     /** @var \Drupal\search_api_solr\Utility\StreamingExpressionQueryHelper $queryHelper */
     $queryHelper = \Drupal::service('search_api_solr.streaming_expression_query_helper');
 
-    $query = $queryHelper->createQuery($index);
-    $exp = $queryHelper->getStreamingExpressionBuilder($query);
+    $solarium_query = $queryHelper->createQuery($index);
+    $exp = $queryHelper->getStreamingExpressionBuilder($solarium_query);
 
     $streaming_expression =
       $exp->_commit_update(
@@ -69,11 +69,11 @@ function search_api_solr_umami_search_api_solr_finalize_index(\Drupal\search_api
         $cu_options
       );
 
-    $queryHelper->setStreamingExpression($query, $streaming_expression);
+    $queryHelper->setStreamingExpression($solarium_query, $streaming_expression);
 
     $index->getServerInstance()
       ->getBackend()
-      ->executeStreamingExpression($query);
+      ->executeStreamingExpression($solarium_query);
   }
 }
 
@@ -111,27 +111,89 @@ function search_api_solr_umami_search_api_solr_query_alter(Solarium\QueryType\Se
 }
 
 function search_api_solr_umami_search_api_query_alter(\Drupal\search_api\Query\QueryInterface &$query) {
-  foreach ($query->getConditionGroup()->getConditions() as $nested_condition_group) {
-    if ($nested_condition_group instanceof \Drupal\search_api\Query\ConditionGroupInterface) {
-      if ($nested_condition_group->hasTag('facet:average_voting')) {
-        $condition = $nested_condition_group->getConditions()[0];
+  if ($query->hasTag('views_recipe_recommendations')) {
+    $uid = \Drupal::currentUser()->id();
+    $min_voting = 3;
 
-        $exclusive_range_condition_group = new \Drupal\search_api\Query\ConditionGroup();
-        $exclusive_range_condition_group->addCondition(
-          $condition->getField(),
-          $condition->getValue(),
-          '>='
-        );
-        $exclusive_range_condition_group->addCondition(
-          $condition->getField(),
-          $condition->getValue() + 1,
-          '<'
-        );
+    /** @var \Drupal\search_api_solr\Utility\StreamingExpressionQueryHelper $queryHelper */
+    $queryHelper = \Drupal::service('search_api_solr.streaming_expression_query_helper');
 
-        $nested_condition_group->addConditionGroup($exclusive_range_condition_group);
-      }
-      elseif ($nested_condition_group->hasTag('facet:user_voting')) {
-        $query->addTag('facet:user_voting');
+    $exp = $queryHelper->getStreamingExpressionBuilder($query);
+
+    // Use uuids instead of ids because the cycle detection just uses values.
+    // Otherwise vote 7, recipe 7 and user 7 will all be the same from cycle
+    // detection's perspective.
+    $streaming_expression =
+      $exp->innerJoin(
+        $exp->sort(
+          $exp->nodes($exp->_collection(),
+            $exp->nodes($exp->_collection(),
+              $exp->nodes($exp->_collection(),
+                $exp->nodes($exp->_collection(),
+                  $exp->_search_all(
+                    'q="' . $exp->_field_escaped_value('search_api_datasource','entity:vote') . '"',
+                    'fq="' . $exp->_index_filter_query() .
+                    ' +' . $exp->_field_value('user_id', $uid) .
+                    ' +' . $exp->_field('value') . ':[' . $min_voting . ' TO 5]"',
+                    'fl="' . $exp->_field_list(['search_api_datasource', 'user_id', 'entity_uuid']) . '"',
+                    'sort="' . $exp->_field('entity_uuid') . ' asc"'
+                  ),
+                  // current user votes -> recipes
+                  'walk="' . $exp->_field('entity_uuid') . '->' . $exp->_field('uuid') . '"',
+                  'gather="' . $exp->_field('nid') . '"'
+                ),
+                // recipes -> all users voted per recipe
+                'walk="node->' . $exp->_field('entity_id') . '"',
+                'fq="' . $exp->_field('value') . ':[' . $min_voting . ' TO 5]' . '"',
+                // Cycle detection avoids the votes by current user we came from.
+                'gather="' . $exp->_field('user_uuid') . '"'
+              ),
+              // all users voted => all recipes voted
+              'walk="node->' . $exp->_field('user_uuid') . '"',
+              'fq="' . $exp->_field('value') . ':[' . $min_voting . ' TO 5]' . '"',
+              'gather="' . $exp->_field('entity_uuid') . '"'
+            ),
+            'walk="node->' . $exp->_field('uuid') . '"',
+            'fq="-' . $exp->_field_value('uid', $uid) . '"',
+            // Cycle detection avoids the recipes the current user voted himself above $min_voting.
+            'gather="' . $exp->_field('nid') . '"'
+          ),
+          'by="node asc"'
+        ),
+        $exp->_search_all(
+          'q=' . $exp->_field_escaped_value('search_api_datasource','entity:node'),
+          'fq="' . $exp->_index_filter_query() . '"',
+          'fl="' . $exp->_all_fields_list(',', FALSE) . '"',
+          'sort="' . $exp->_field('nid') . ' asc"'
+        ),
+        'on="node=' . $exp->_field('nid') . '"'
+      );
+
+    $queryHelper->setStreamingExpression($query, $streaming_expression);
+  }
+  else {
+    foreach ($query->getConditionGroup()->getConditions() as $nested_condition_group) {
+      if ($nested_condition_group instanceof \Drupal\search_api\Query\ConditionGroupInterface) {
+        if ($nested_condition_group->hasTag('facet:average_voting')) {
+          $condition = $nested_condition_group->getConditions()[0];
+
+          $exclusive_range_condition_group = new \Drupal\search_api\Query\ConditionGroup();
+          $exclusive_range_condition_group->addCondition(
+            $condition->getField(),
+            $condition->getValue(),
+            '>='
+          );
+          $exclusive_range_condition_group->addCondition(
+            $condition->getField(),
+            $condition->getValue() + 1,
+            '<'
+          );
+
+          $nested_condition_group->addConditionGroup($exclusive_range_condition_group);
+        }
+        elseif ($nested_condition_group->hasTag('facet:user_voting')) {
+          $query->addTag('facet:user_voting');
+        }
       }
     }
   }
