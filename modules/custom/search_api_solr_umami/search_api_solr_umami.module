@@ -26,7 +26,7 @@ function search_api_solr_umami_search_api_solr_field_mapping_alter(\Drupal\searc
  * @throws \Drupal\search_api\SearchApiException
  */
 function search_api_solr_umami_search_api_solr_finalize_index(\Drupal\search_api\IndexInterface $index) {
-  if ('votings' == $index->id() || 'recipes' == $index->id()) {
+  if ('recipes' == $index->id()) {
     $cu_options = [
       'commit.waitSearcher' => TRUE,
       'commit.softCommit' => TRUE,
@@ -35,50 +35,45 @@ function search_api_solr_umami_search_api_solr_finalize_index(\Drupal\search_api
     /** @var \Drupal\search_api_solr\Utility\StreamingExpressionQueryHelper $queryHelper */
     $queryHelper = \Drupal::service('search_api_solr.streaming_expression_query_helper');
 
-    $votings_index = Index::load('votings');
-    $votings_query = $queryHelper->createQuery($votings_index);
-    $votings_exp = $queryHelper->getStreamingExpressionBuilder($votings_query);
-
-    $recipes_index = Index::load('recipes');
-    $recipes_query = $queryHelper->createQuery($recipes_index);
-    $recipes_exp = $queryHelper->getStreamingExpressionBuilder($recipes_query);
+    $query = $queryHelper->createQuery($index);
+    $exp = $queryHelper->getStreamingExpressionBuilder($query);
 
     $streaming_expression =
-      $recipes_exp->_commit_update(
-        $recipes_exp->innerJoin(
-          $recipes_exp->_search_all(
-            'q=*:*',
-            'fq="' . $recipes_exp->_index_filter_query() . '"',
-            'fl="' . $recipes_exp->_all_fields_list(',', TRUE, ['score', 'random', 'average_voting']) . '"',
-            'sort="' . $recipes_exp->_field('nid') . ' asc"'
+      $exp->_commit_update(
+        $exp->innerJoin(
+          $exp->_search_all(
+            'q=' . $exp->_field_escaped_value('search_api_datasource','entity:node'),
+            'fq="' . $exp->_index_filter_query() . '"',
+            'fl="' . $exp->_all_fields_list(',', TRUE, ['score', 'random', 'average_voting']) . '"',
+            'sort="' . $exp->_field('nid') . ' asc"'
           ),
-          $votings_exp->select(
-            $votings_exp->rollup(
-              $votings_exp->_search_all(
-                'q=*:*',
-                'fq="' . $votings_exp->_index_filter_query() . '"',
-                'fl="' . $votings_exp->_field_list([
+          $exp->select(
+            $exp->rollup(
+              $exp->_search_all(
+                'q=' . $exp->_field_escaped_value('search_api_datasource','entity:vote'),
+                'fq="' . $exp->_index_filter_query() . '"',
+                'fl="' . $exp->_field_list([
                   'entity_id',
                   'value'
                 ]) . '"',
-                'sort="' . $votings_exp->_field('entity_id') . ' asc"'
+                'sort="' . $exp->_field('entity_id') . ' asc"'
               ),
-              'over="' . $votings_exp->_field('entity_id') . '"',
-              'avg(' . $votings_exp->_field('value') . ')'
+              'over="' . $exp->_field('entity_id') . '"',
+              'avg(' . $exp->_field('value') . ')'
             ),
-            $votings_exp->_field('entity_id') . ' as ' . $recipes_exp->_field('nid'),
-            'avg(' . $votings_exp->_field('value') . ') as ' . $recipes_exp->_field('average_voting')
+            $exp->_field('entity_id') . ' as ' . $exp->_field('nid'),
+            'avg(' . $exp->_field('value') . ') as ' . $exp->_field('average_voting')
           ),
-          'on=' . $recipes_exp->_field('nid')
+          'on=' . $exp->_field('nid')
         ),
         $cu_options
       );
 
-    $queryHelper->setStreamingExpression($recipes_query, $streaming_expression);
+    $queryHelper->setStreamingExpression($query, $streaming_expression);
 
-    $recipes_index->getServerInstance()
+    $index->getServerInstance()
       ->getBackend()
-      ->executeStreamingExpression($recipes_query);
+      ->executeStreamingExpression($query);
   }
 }
 
@@ -90,6 +85,9 @@ function search_api_solr_umami_search_api_solr_query_alter(Solarium\QueryType\Se
     $exp = $queryHelper->getStreamingExpressionBuilder($query);
 
     $average_voting_field = $exp->_field('average_voting');
+    $user_voting_field = $exp->_field('user_voting');
+    $nid_field = $exp->_field('nid');
+    $entity_id_field = $exp->_field('entity_id');
 
     $facet_set = $solarium_query->getFacetSet();
 
@@ -103,17 +101,39 @@ function search_api_solr_umami_search_api_solr_query_alter(Solarium\QueryType\Se
       'gap' => 1,
     ]);
   }
+
+  if ($query->hasTag('facet:user_voting')) {
+    $solarium_query->addFilterQuery([
+      'key' => 'user_filter',
+      'query' => '{!join from=' . $entity_id_field . ' to=' . $nid_field . '}' .
+        $exp->_field_value('user_id', \Drupal::currentUser()->id()),
+    ]);
+  }
 }
 
 function search_api_solr_umami_search_api_query_alter(\Drupal\search_api\Query\QueryInterface &$query) {
   foreach ($query->getConditionGroup()->getConditions() as $nested_condition_group) {
-    if ($nested_condition_group instanceof \Drupal\search_api\Query\ConditionGroupInterface && $nested_condition_group->hasTag('facet:average_voting'))  {
-      $condition = $nested_condition_group->getConditions()[0];
-      $nested_condition_group->addCondition(
-        $condition->getField(),
-        [$condition->getValue(), $condition->getValue() + 1],
-        'BETWEEN'
+    if ($nested_condition_group instanceof \Drupal\search_api\Query\ConditionGroupInterface) {
+      if ($nested_condition_group->hasTag('facet:average_voting')) {
+        $condition = $nested_condition_group->getConditions()[0];
+
+        $exclusive_range_condition_group = new \Drupal\search_api\Query\ConditionGroup();
+        $exclusive_range_condition_group->addCondition(
+          $condition->getField(),
+          $condition->getValue(),
+          '>='
         );
+        $exclusive_range_condition_group->addCondition(
+          $condition->getField(),
+          $condition->getValue() + 1,
+          '<'
+        );
+
+        $nested_condition_group->addConditionGroup($exclusive_range_condition_group);
+      }
+      elseif ($nested_condition_group->hasTag('facet:user_voting')) {
+        $query->addTag('facet:user_voting');
+      }
     }
   }
 }

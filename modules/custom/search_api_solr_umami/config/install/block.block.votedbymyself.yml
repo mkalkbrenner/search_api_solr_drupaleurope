@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.voted_by_myself
+  module:
+    - facets
+  theme:
+    - umami
+id: votedbymyself
+theme: umami
+region: page_title
+weight: 0
+provider: null
+plugin: 'facet_block:voted_by_myself'
+settings:
+  id: 'facet_block:voted_by_myself'
+  label: 'Voted by myself'
+  provider: facets
+  label_display: visible
+  block_id: votedbymyself
+visibility: {  }

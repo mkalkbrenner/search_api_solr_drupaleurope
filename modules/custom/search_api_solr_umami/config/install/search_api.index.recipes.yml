@@ -6,6 +6,7 @@ dependencies:
     - user
     - search_api
     - node
+    - votingapi
   config:
     - field.storage.node.field_author
     - field.storage.node.field_difficulty
@@ -30,6 +31,11 @@ field_settings:
     type: decimal
     configuration:
       dummy_value: '3'
+  entity_id:
+    label: 'Voted entity'
+    datasource_id: 'entity:vote'
+    property_path: entity_id
+    type: integer
   field_difficulty:
     label: Difficulty
     datasource_id: 'entity:node'
@@ -67,6 +73,11 @@ field_settings:
     datasource_id: 'entity:node'
     property_path: nid
     type: integer
+  timestamp:
+    label: Created
+    datasource_id: 'entity:vote'
+    property_path: timestamp
+    type: date
   title:
     label: Title
     datasource_id: 'entity:node'
@@ -82,6 +93,23 @@ field_settings:
         - field.storage.node.field_author
       module:
         - user
+  user_id:
+    label: 'Authored by'
+    datasource_id: 'entity:vote'
+    property_path: user_id
+    type: integer
+  user_voting:
+    label: 'User Voting'
+    datasource_id: 'entity:node'
+    property_path: dummy_field
+    type: boolean
+    configuration:
+      dummy_value: '1'
+  value:
+    label: Value
+    datasource_id: 'entity:vote'
+    property_path: value
+    type: decimal
 datasource_settings:
   'entity:node':
     bundles:
@@ -89,6 +117,10 @@ datasource_settings:
       selected:
         - recipe
     languages:
+      default: true
+      selected: {  }
+  'entity:vote':
+    bundles:
       default: true
       selected: {  }
 processor_settings:
