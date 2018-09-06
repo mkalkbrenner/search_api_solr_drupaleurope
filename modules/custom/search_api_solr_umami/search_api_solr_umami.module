@@ -85,7 +85,6 @@ function search_api_solr_umami_search_api_solr_query_alter(Solarium\QueryType\Se
     $exp = $queryHelper->getStreamingExpressionBuilder($query);
 
     $average_voting_field = $exp->_field('average_voting');
-    $user_voting_field = $exp->_field('user_voting');
     $nid_field = $exp->_field('nid');
     $entity_id_field = $exp->_field('entity_id');
 
@@ -100,14 +99,14 @@ function search_api_solr_umami_search_api_solr_query_alter(Solarium\QueryType\Se
       'end' => 5,
       'gap' => 1,
     ]);
-  }
 
-  if ($query->hasTag('facet:user_voting')) {
-    $solarium_query->addFilterQuery([
-      'key' => 'user_filter',
-      'query' => '{!join from=' . $entity_id_field . ' to=' . $nid_field . '}' .
-        $exp->_field_value('user_id', \Drupal::currentUser()->id()),
-    ]);
+    if ($query->hasTag('facet:user_voting')) {
+      $solarium_query->addFilterQuery([
+        'key' => 'user_filter',
+        'query' => '{!join from=' . $entity_id_field . ' to=' . $nid_field . '}' .
+          $exp->_field_value('user_id', \Drupal::currentUser()->id()),
+      ]);
+    }
   }
 }
 
