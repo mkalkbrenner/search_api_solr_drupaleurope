@@ -66,7 +66,9 @@ display:
         options:
           view_modes:
             'entity:node':
-              recipe: teaser
+              recipe: card
+            'entity:vote':
+              vote: default
       fields:
         average_voting:
           table: search_api_index_recipes
@@ -137,11 +139,11 @@ display:
           exposed: true
           expose:
             operator_id: search_api_fulltext_op
-            label: 'Fulltext search'
+            label: ''
             description: ''
             use_operator: false
             operator: search_api_fulltext_op
-            identifier: search_api_fulltext
+            identifier: keys
             required: false
             remember: false
             multiple: false
@@ -222,6 +224,7 @@ display:
         operator: AND
         groups:
           1: AND
+      css_class: grid--3
     cache_metadata:
       max-age: -1
       contexts:

@@ -198,3 +198,7 @@ function search_api_solr_umami_search_api_query_alter(\Drupal\search_api\Query\Q
     }
   }
 }
+
+function search_api_solr_umami_form_search_block_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+  $form['#action'] = \Drupal\Core\Url::fromRoute('view.recipe_solr_search.page_1')->getInternalPath();
+}

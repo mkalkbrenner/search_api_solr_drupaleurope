@@ -4,13 +4,14 @@ dependencies:
   config:
     - views.view.recipe_recommendations
   module:
+    - system
     - views
   theme:
     - umami
 id: views_block__recipe_recommendations_block_1
 theme: umami
-region: page_title
-weight: 0
+region: content
+weight: 20
 provider: null
 plugin: 'views_block:recipe_recommendations-block_1'
 settings:
@@ -20,4 +21,9 @@ settings:
   label_display: visible
   views_label: ''
   items_per_page: none
-visibility: {  }
+visibility:
+  request_path:
+    id: request_path
+    pages: "/articles\r\n/recipes\r\n<front>"
+    negate: false
+    context_mapping: {  }

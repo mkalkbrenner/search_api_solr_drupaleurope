@@ -2,21 +2,21 @@ langcode: en
 status: true
 dependencies:
   config:
-    - facets.facet.average_voting
+    - facets.facet.difficulty
   module:
     - facets
   theme:
     - umami
-id: averagevoting
+id: difficulty
 theme: umami
 region: sidebar
-weight: -7
+weight: -8
 provider: null
-plugin: 'facet_block:average_voting'
+plugin: 'facet_block:difficulty'
 settings:
-  id: 'facet_block:average_voting'
-  label: 'Average Voting'
+  id: 'facet_block:difficulty'
+  label: Difficulty
   provider: facets
   label_display: visible
-  block_id: averagevoting
+  block_id: difficulty
 visibility: {  }

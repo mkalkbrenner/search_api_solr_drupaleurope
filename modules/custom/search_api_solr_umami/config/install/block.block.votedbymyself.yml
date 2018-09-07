@@ -9,8 +9,8 @@ dependencies:
     - umami
 id: votedbymyself
 theme: umami
-region: page_title
-weight: 0
+region: sidebar
+weight: -6
 provider: null
 plugin: 'facet_block:voted_by_myself'
 settings:
