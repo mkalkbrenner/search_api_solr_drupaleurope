@@ -35,8 +35,8 @@ function search_api_solr_umami_search_api_solr_finalize_index(\Drupal\search_api
     /** @var \Drupal\search_api_solr\Utility\StreamingExpressionQueryHelper $queryHelper */
     $queryHelper = \Drupal::service('search_api_solr.streaming_expression_query_helper');
 
-    $solarium_query = $queryHelper->createQuery($index);
-    $exp = $queryHelper->getStreamingExpressionBuilder($solarium_query);
+    $query = $queryHelper->createQuery($index);
+    $exp = $queryHelper->getStreamingExpressionBuilder($query);
 
     $streaming_expression =
       $exp->_commit_update(
@@ -113,7 +113,7 @@ function search_api_solr_umami_search_api_solr_query_alter(Solarium\QueryType\Se
 function search_api_solr_umami_search_api_query_alter(\Drupal\search_api\Query\QueryInterface &$query) {
   if ($query->hasTag('views_recipe_recommendations')) {
     $uid = \Drupal::currentUser()->id();
-    $min_voting = 3;
+    $min_voting = 4;
 
     /** @var \Drupal\search_api_solr\Utility\StreamingExpressionQueryHelper $queryHelper */
     $queryHelper = \Drupal::service('search_api_solr.streaming_expression_query_helper');
@@ -145,7 +145,7 @@ function search_api_solr_umami_search_api_query_alter(\Drupal\search_api\Query\Q
                 // recipes -> all users voted per recipe
                 'walk="node->' . $exp->_field('entity_id') . '"',
                 'fq="' . $exp->_field('value') . ':[' . $min_voting . ' TO 5]' . '"',
-                // Cycle detection avoids the votes by current user we came from.
+                // Cycle detection avoids votes by current user we came from.
                 'gather="' . $exp->_field('user_uuid') . '"'
               ),
               // all users voted => all recipes voted
@@ -155,7 +155,7 @@ function search_api_solr_umami_search_api_query_alter(\Drupal\search_api\Query\Q
             ),
             'walk="node->' . $exp->_field('uuid') . '"',
             'fq="-' . $exp->_field_value('uid', $uid) . '"',
-            // Cycle detection avoids the recipes the current user voted himself above $min_voting.
+            // Cycle detection avoids the recipes the current user voted on himself above $min_voting.
             'gather="' . $exp->_field('nid') . '"'
           ),
           'by="node asc"'
@@ -177,7 +177,7 @@ function search_api_solr_umami_search_api_query_alter(\Drupal\search_api\Query\Q
         if ($nested_condition_group->hasTag('facet:average_voting')) {
           $condition = $nested_condition_group->getConditions()[0];
 
-          $exclusive_range_condition_group = new \Drupal\search_api\Query\ConditionGroup();
+          $exclusive_range_condition_group = new \Drupal\search_api\Query\ConditionGroup('AND');
           $exclusive_range_condition_group->addCondition(
             $condition->getField(),
             $condition->getValue(),
