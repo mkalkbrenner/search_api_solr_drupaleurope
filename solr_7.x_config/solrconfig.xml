@@ -88,6 +88,8 @@
   <lib dir="${solr.install.dir:../../../..}/contrib/analysis-extras/lib" regex=".*\.jar" />
   <lib dir="${solr.install.dir:../../../..}/contrib/analysis-extras/lucene-libs" regex=".*\.jar" />
 
+  <lib dir="${solr.install.dir:../../../..}/dist/" regex="solr-ltr-\d.*\.jar" />
+
   <!-- an exact 'path' can be used instead of a 'dir' to specify a
        specific jar file.  This will cause a serious error to be logged
        if it can't be loaded.
@@ -494,6 +496,13 @@
       initialSize="0"
       autowarmCount="10"
       regenerator="solr.NoOpRegenerator" />
+
+    <cache name="QUERY_DOC_FV"
+           class="solr.search.LRUCache"
+           size="4096"
+           initialSize="2048"
+           autowarmCount="4096"
+           regenerator="solr.search.NoOpRegenerator" />
 
     <!-- Field Value Cache
 
@@ -1410,6 +1419,8 @@
      <queryParser name="myparser" class="com.mycompany.MyQParserPlugin"/>
     -->
 
+  <queryParser name="ltr" class="org.apache.solr.ltr.search.LTRQParserPlugin"/>
+
   <!-- Function Parsers
 
        http://wiki.apache.org/solr/FunctionQuery
@@ -1447,5 +1458,9 @@
       EditorialMarkerFactory will do exactly that:
      <transformer name="qecBooster" class="org.apache.solr.response.transform.EditorialMarkerFactory" />
     -->
+
+  <transformer name="features" class="org.apache.solr.ltr.response.transform.LTRFeatureLoggerTransformerFactory">
+    <str name="fvCacheName">QUERY_DOC_FV</str>
+  </transformer>
 
 </config>

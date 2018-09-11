@@ -1,0 +1,28 @@
+[
+    {
+        "name" : "isVegetarian",
+        "class" : "org.apache.solr.ltr.feature.SolrFeature",
+        "params" : {
+            "fq": ["{!terms f=sdm_tags}Vegetarian"]
+        }
+    },
+    {
+        "name" : "highVoting",
+        "class" : "org.apache.solr.ltr.feature.SolrFeature",
+        "params" : {
+            "fq": ["fts_average_voting:[3.8 TO 5]"]
+        }
+    },
+    {
+        "name" : "recipeRecency",
+        "class" : "org.apache.solr.ltr.feature.SolrFeature",
+        "params" : {
+            "q" : "{!func}recip( ms(NOW,ds_changed), 3.16e-11, 1, 1)"
+        }
+    },
+    {
+        "name" : "originalScore",
+        "class" : "org.apache.solr.ltr.feature.OriginalScoreFeature",
+        "params" : {}
+    }
+]

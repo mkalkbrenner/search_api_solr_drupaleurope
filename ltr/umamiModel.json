@@ -1,0 +1,18 @@
+{
+    "class" : "org.apache.solr.ltr.model.LinearModel",
+    "name" : "umamiModel100",
+    "features" : [
+        { "name" : "isVegetarian" },
+        { "name" : "highVoting" },
+        { "name" : "recipeRecency" },
+        { "name" : "originalScore" }
+    ],
+    "params" : {
+        "weights" : {
+            "isVegetarian" : 0.1,
+            "highVoting" : 0.8,
+            "recipeRecency" : 1.0,
+            "originalScore" : 0.5
+        }
+    }
+}
