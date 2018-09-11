@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.tags_taxonomy_term_name
+  module:
+    - facets
+  theme:
+    - umami
+id: tagstaxonomytermname
+theme: umami
+region: sidebar
+weight: -5
+provider: null
+plugin: 'facet_block:tags_taxonomy_term_name'
+settings:
+  id: 'facet_block:tags_taxonomy_term_name'
+  label: Tags
+  provider: facets
+  label_display: visible
+  block_id: tagstaxonomytermname
+visibility: {  }
