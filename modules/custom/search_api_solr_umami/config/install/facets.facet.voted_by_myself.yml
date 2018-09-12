@@ -54,6 +54,11 @@ processor_configs:
       pre_query: 50
       build: 15
     settings: {  }
+  votedbymyself:
+    processor_id: votedbymyself
+    weights:
+      build: 5
+    settings: {  }
 empty_behavior:
   behavior: none
 show_title: false
