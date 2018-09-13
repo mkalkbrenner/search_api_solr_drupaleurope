@@ -1,7 +1,5 @@
 <?php
 
-use Drupal\search_api\Entity\Index;
-
 /**
  * Implements hook_search_api_solr_field_mapping_alter().
  */
@@ -107,6 +105,10 @@ function search_api_solr_umami_search_api_solr_query_alter(Solarium\QueryType\Se
           $exp->_field_value('user_id', \Drupal::currentUser()->id()),
       ]);
     }
+
+    if (isset($_GET['sort_order']) && 'ASC' == $_GET['sort_order']) {
+      $solarium_query->addParam('rq', '{!ltr model=umamiModel reRankDocs=100}');
+    }
   }
 }
 
@@ -177,19 +179,11 @@ function search_api_solr_umami_search_api_query_alter(\Drupal\search_api\Query\Q
         if ($nested_condition_group->hasTag('facet:average_voting')) {
           $condition = $nested_condition_group->getConditions()[0];
 
-          $exclusive_range_condition_group = new \Drupal\search_api\Query\ConditionGroup('AND');
-          $exclusive_range_condition_group->addCondition(
+          $nested_condition_group->addCondition(
             $condition->getField(),
-            $condition->getValue(),
-            '>='
+            [$condition->getValue(), $condition->getValue() + 1],
+            'BETWEEN'
           );
-          $exclusive_range_condition_group->addCondition(
-            $condition->getField(),
-            $condition->getValue() + 1,
-            '<'
-          );
-
-          $nested_condition_group->addConditionGroup($exclusive_range_condition_group);
         }
         elseif ($nested_condition_group->hasTag('facet:user_voting')) {
           $query->addTag('facet:user_voting');

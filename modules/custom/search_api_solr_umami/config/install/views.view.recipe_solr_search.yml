@@ -212,7 +212,19 @@ display:
             group_items: {  }
           reduce_duplicates: false
           plugin_id: search_api_datasource
-      sorts: {  }
+      sorts:
+        user_voting:
+          id: user_voting
+          table: search_api_index_recipes
+          field: user_voting
+          relationship: none
+          group_type: group
+          admin_label: LTR
+          order: DESC
+          exposed: true
+          expose:
+            label: 'use AI to sort results (Asc = yes / Desc = no)'
+          plugin_id: search_api
       title: 'Solr Search'
       header: {  }
       footer: {  }
@@ -231,6 +243,8 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
+        - 'url.query_args:sort_by'
+        - 'url.query_args:sort_order'
       tags: {  }
   page_1:
     display_plugin: page
@@ -250,4 +264,6 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
+        - 'url.query_args:sort_by'
+        - 'url.query_args:sort_order'
       tags: {  }
