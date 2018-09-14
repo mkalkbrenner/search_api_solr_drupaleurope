@@ -66,11 +66,6 @@
             "profiles/custom/{$name}": [
                 "type:drupal-custom-profile"
             ]
-        },
-        "patches": {
-            "drupal/votingapi_widgets": {
-                "2996444 Exceptions on every page after Drupal 8.6 update": "https://www.drupal.org/files/issues/2018-08-31/2996444.patch"
-            }
         }
     }
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "64971533a330af9139f8ebddb0d80fdb",
+    "content-hash": "c1220df277621ab00a03fe85678627fc",
     "packages": [
         {
             "name": "antennaio/jquery-bar-rating",
@@ -71,16 +71,16 @@
         },
         {
             "name": "composer/installers",
-            "version": "v1.5.0",
+            "version": "v1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/installers.git",
-                "reference": "049797d727261bf27f2690430d935067710049c2"
+                "reference": "cfcca6b1b60bc4974324efb5783c13dca6932b5b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/installers/zipball/049797d727261bf27f2690430d935067710049c2",
-                "reference": "049797d727261bf27f2690430d935067710049c2",
+                "url": "https://api.github.com/repos/composer/installers/zipball/cfcca6b1b60bc4974324efb5783c13dca6932b5b",
+                "reference": "cfcca6b1b60bc4974324efb5783c13dca6932b5b",
                 "shasum": ""
             },
             "require": {
@@ -187,7 +187,7 @@
                 "zend",
                 "zikula"
             ],
-            "time": "2017-12-29T09:13:20+00:00"
+            "time": "2018-08-27T06:10:37+00:00"
         },
         {
             "name": "composer/semver",
@@ -700,18 +700,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal-composer/drupal-scaffold.git",
-                "reference": "fc6bf4ceecb5d47327f54d48d4d4f67b17da956d"
+                "reference": "b586976dfedd603cec9ed31195e957d081ae734a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drupal-composer/drupal-scaffold/zipball/fc6bf4ceecb5d47327f54d48d4d4f67b17da956d",
-                "reference": "fc6bf4ceecb5d47327f54d48d4d4f67b17da956d",
+                "url": "https://api.github.com/repos/drupal-composer/drupal-scaffold/zipball/b586976dfedd603cec9ed31195e957d081ae734a",
+                "reference": "b586976dfedd603cec9ed31195e957d081ae734a",
                 "shasum": ""
             },
             "require": {
                 "composer-plugin-api": "^1.0.0",
                 "composer/semver": "^1.4",
-                "php": ">=5.4.5"
+                "php": "^5.5.9|>=7.0.8"
             },
             "require-dev": {
                 "composer/composer": "dev-master",
@@ -736,20 +736,20 @@
                 "GPL-2.0-or-later"
             ],
             "description": "Composer Plugin for updating the Drupal scaffold files when using drupal/core",
-            "time": "2018-07-27T10:07:07+00:00"
+            "time": "2018-09-12T11:43:38+00:00"
         },
         {
             "name": "drupal/core",
-            "version": "8.6.0",
+            "version": "8.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core.git",
-                "reference": "4a2507b102fcedc74507fd372131f2ed72913429"
+                "reference": "1c8b96c89288daf4d145c6dbcf1e8f0d0c9d7970"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drupal/core/zipball/4a2507b102fcedc74507fd372131f2ed72913429",
-                "reference": "4a2507b102fcedc74507fd372131f2ed72913429",
+                "url": "https://api.github.com/repos/drupal/core/zipball/1c8b96c89288daf4d145c6dbcf1e8f0d0c9d7970",
+                "reference": "1c8b96c89288daf4d145c6dbcf1e8f0d0c9d7970",
                 "shasum": ""
             },
             "require": {
@@ -974,7 +974,7 @@
                 "GPL-2.0-or-later"
             ],
             "description": "Drupal is an open source content management platform powering millions of websites and applications.",
-            "time": "2018-09-05T22:16:20+00:00"
+            "time": "2018-09-10T11:50:07+00:00"
         },
         {
             "name": "drupal/devel",
@@ -1190,7 +1190,7 @@
             "source": {
                 "type": "git",
                 "url": "https://git.drupal.org/project/search_api_solr",
-                "reference": "ed529d47fe1a733e79d6daea958b3ead863ae9ae"
+                "reference": "ff9087142a37e6ad647873ce30d8fa15b105830f"
             },
             "require": {
                 "drupal/core": "^8.5",
@@ -1222,8 +1222,8 @@
                     "dev-2.x": "2.x-dev"
                 },
                 "drupal": {
-                    "version": "8.x-2.1+21-dev",
-                    "datestamp": "1535702580",
+                    "version": "8.x-2.1+22-dev",
+                    "datestamp": "1535707380",
                     "security-coverage": {
                         "status": "not-covered",
                         "message": "Dev releases are not covered by Drupal security advisories."
@@ -1267,7 +1267,7 @@
                 "issues": "https://www.drupal.org/project/issues/search_api_solr",
                 "irc": "irc://irc.freenode.org/drupal-search-api"
             },
-            "time": "2018-08-31T09:18:37+00:00"
+            "time": "2018-09-12T09:46:02+00:00"
         },
         {
             "name": "drupal/votingapi",
@@ -1333,7 +1333,7 @@
             "source": {
                 "type": "git",
                 "url": "https://git.drupal.org/project/votingapi_widgets",
-                "reference": "f0a07e3c333e8adfabfc4ce35fe627f936cdc07f"
+                "reference": "6d0671eb6bb335c3d7800709b6bfeb1a8bb34591"
             },
             "require": {
                 "antennaio/jquery-bar-rating": "1.2.2",
@@ -1346,16 +1346,14 @@
                     "dev-1.x": "1.x-dev"
                 },
                 "drupal": {
-                    "version": "8.x-1.0-alpha4+9-dev",
-                    "datestamp": "1535031481",
+                    "version": "8.x-1.0-alpha4+10-dev",
+                    "datestamp": "1535457181",
                     "security-coverage": {
                         "status": "not-covered",
                         "message": "Project has not opted into security advisory coverage!"
                     }
                 },
-                "patches_applied": {
-                    "2996444 Exceptions on every page after Drupal 8.6 update": "https://www.drupal.org/files/issues/2018-08-31/2996444.patch"
-                }
+                "patches_applied": []
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
             "license": [
@@ -1384,7 +1382,7 @@
                 "source": "http://cgit.drupalcode.org/votingapi_widgets",
                 "issues": "https://www.drupal.org/project/issues/votingapi_widgets"
             },
-            "time": "2018-08-28T11:49:02+00:00"
+            "time": "2018-09-10T08:30:26+00:00"
         },
         {
             "name": "easyrdf/easyrdf",
