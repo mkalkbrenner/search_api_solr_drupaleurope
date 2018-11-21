@@ -2,7 +2,6 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.node.recipe.field_author
     - field.field.node.recipe.field_cooking_time
     - field.field.node.recipe.field_difficulty
     - field.field.node.recipe.field_image

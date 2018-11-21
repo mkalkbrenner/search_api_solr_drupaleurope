@@ -3,13 +3,12 @@ status: true
 dependencies:
   module:
     - search_api_solr
-    - user
-    - taxonomy
     - node
-    - search_api
+    - taxonomy
     - votingapi
+    - user
+    - search_api
   config:
-    - field.storage.node.field_author
     - field.storage.node.field_difficulty
     - field.storage.node.field_ingredients
     - field.storage.node.field_recipe_instruction
@@ -21,6 +20,23 @@ third_party_settings:
     finalize: true
     commit_before_finalize: true
     commit_after_finalize: true
+    highlighter:
+      maxAnalyzedChars: 10000
+      fragmenter: gap
+      regex:
+        slop: 0.5
+        pattern: blank
+        maxAnalyzedChars: 10000
+      usePhraseHighlighter: true
+      highlightMultiTerm: true
+      preserveMulti: false
+      highlight:
+        mergeContiguous: true
+        requireFieldMatch: false
+        snippets: 3
+        fragsize: 0
+    advanced:
+      index_prefix: ''
 id: recipes
 name: Recipes
 description: ''
@@ -32,17 +48,23 @@ field_settings:
     property_path: dummy_field
     type: decimal
     configuration:
-      dummy_value: '3'
+      dummy_value: '0'
   changed:
     label: Changed
     datasource_id: 'entity:node'
     property_path: changed
     type: date
+    dependencies:
+      module:
+        - node
   entity_id:
     label: 'Voted entity'
     datasource_id: 'entity:vote'
     property_path: entity_id
     type: solr_string_doc_values
+    dependencies:
+      module:
+        - votingapi
   entity_uuid:
     label: 'Voted entity » Content » UUID'
     datasource_id: 'entity:vote'
@@ -50,6 +72,8 @@ field_settings:
     type: solr_string_doc_values
     dependencies:
       module:
+        - votingapi
+        - node
         - node
   field_difficulty:
     label: Difficulty
@@ -88,6 +112,9 @@ field_settings:
     datasource_id: 'entity:node'
     property_path: nid
     type: solr_string_doc_values
+    dependencies:
+      module:
+        - node
   tags:
     label: 'Tags » Taxonomy term » Name'
     datasource_id: 'entity:node'
@@ -98,31 +125,39 @@ field_settings:
         - field.storage.node.field_tags
       module:
         - taxonomy
+        - taxonomy
   timestamp:
     label: Created
     datasource_id: 'entity:vote'
     property_path: timestamp
     type: date
+    dependencies:
+      module:
+        - votingapi
   title:
     label: Title
     datasource_id: 'entity:node'
     property_path: title
     type: text
+    dependencies:
+      module:
+        - node
   uid:
-    label: 'Author » User » User ID'
+    label: 'Authored by'
     datasource_id: 'entity:node'
-    property_path: 'field_author:entity:uid'
+    property_path: uid
     type: integer
     dependencies:
-      config:
-        - field.storage.node.field_author
       module:
-        - user
+        - node
   user_id:
     label: 'Authored by'
     datasource_id: 'entity:vote'
     property_path: user_id
     type: integer
+    dependencies:
+      module:
+        - votingapi
   user_uuid:
     label: 'Authored by » User » UUID'
     datasource_id: 'entity:vote'
@@ -130,6 +165,8 @@ field_settings:
     type: solr_string_doc_values
     dependencies:
       module:
+        - votingapi
+        - user
         - user
   user_voting:
     label: 'User Voting'
@@ -143,11 +180,17 @@ field_settings:
     datasource_id: 'entity:node'
     property_path: uuid
     type: solr_string_doc_values
+    dependencies:
+      module:
+        - node
   value:
     label: Value
     datasource_id: 'entity:vote'
     property_path: value
     type: decimal
+    dependencies:
+      module:
+        - votingapi
 datasource_settings:
   'entity:node':
     bundles:

@@ -1,0 +1,25 @@
+uuid: bd1ad393-b59a-48ef-99ad-e55ae3146080
+langcode: en
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - umami
+id: poweredbydrupal
+theme: umami
+region: sidebar
+weight: 0
+provider: null
+plugin: system_powered_by_block
+settings:
+  id: system_powered_by_block
+  label: 'Powered by Drupal'
+  provider: system
+  label_display: '0'
+visibility:
+  request_path:
+    id: request_path
+    pages: "/recipes/solr-search\r\n/recipes/solr-search/*"
+    negate: false
+    context_mapping: {  }

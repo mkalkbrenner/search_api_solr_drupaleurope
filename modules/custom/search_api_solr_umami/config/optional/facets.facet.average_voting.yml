@@ -11,13 +11,13 @@ name: 'Average Voting'
 url_alias: average_voting
 weight: 0
 min_count: 1
-show_only_one_result: false
+show_only_one_result: true
 field_identifier: average_voting
 facet_source_id: 'search_api:views_page__recipe_solr_search__page_1'
 widget:
   type: links
   config:
-    show_numbers: false
+    show_numbers: true
     soft_limit: 0
     soft_limit_settings:
       show_less_label: 'Show less'
@@ -33,8 +33,19 @@ processor_configs:
   fivestar:
     processor_id: fivestar
     weights:
-      build: 5
+      build: -4
     settings: {  }
+  granularity_item:
+    processor_id: granularity_item
+    weights:
+      build: -5
+    settings:
+      granularity: 1
+      min_value: 0
+      max_value: 5
+      include_lower: true
+      include_upper: false
+      include_edges: true
   raw_value_widget_order:
     processor_id: raw_value_widget_order
     weights:
@@ -45,7 +56,7 @@ processor_configs:
     processor_id: url_processor_handler
     weights:
       pre_query: 50
-      build: 15
+      build: -7
     settings: {  }
 empty_behavior:
   behavior: none

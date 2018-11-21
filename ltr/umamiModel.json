@@ -1,6 +1,6 @@
 {
     "class" : "org.apache.solr.ltr.model.LinearModel",
-    "name" : "umamiModel100",
+    "name" : "umamiModel",
     "features" : [
         { "name" : "isVegetarian" },
         { "name" : "highVoting" },
